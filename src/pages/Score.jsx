@@ -152,7 +152,7 @@ const Score = () => {
             setSubmitted(false);
             setShowError(false);
           }}
-          className="rounded-[12px] ml-4 md:rounded-[24px] md:mr-60 lg:mr-8 shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] lg:w-[564px] text-[18px] md:text-[28px] font-medium h-[56px] md:h-[92px]"
+          className="rounded-[12px] ml-4 md:rounded-[24px] md:mr-72 lg:mr-8 shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] lg:w-[564px] text-[18px] md:text-[28px] font-medium h-[56px] md:h-[92px]"
         >
           Play Again
         </button>
