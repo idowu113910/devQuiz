@@ -86,7 +86,7 @@ const Question = () => {
   return (
     <>
       <div
-        className={`p-2 h-[812px] md:h-[1204px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
+        className={`p-2 h-[812px] md:h-[1400px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
           isDark ? "bg-[#F4F6FA] text-[#313E51]" : "bg-[#313E51] text-white"
         }`}
       >

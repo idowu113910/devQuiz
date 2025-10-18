@@ -35,7 +35,7 @@ const StartMenu = () => {
   return (
     <>
       <div
-        className={`p-6 h-[812px] md:h-[1024px] md:p-18 lg:relative lg:h-[960px] transition-colors duration-500 ${
+        className={`p-6 h-[812px] md:h-[1400px] md:p-18 lg:relative lg:h-[960px] transition-colors duration-500 ${
           isDark ? "bg-[#F4F6FA] text-[#313E51]" : "bg-[#313E51] text-white"
         }`}
       >
