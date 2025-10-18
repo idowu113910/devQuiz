@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
+#root {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.body {
+  font-family: "Rubik", sans-serif;
+}
+
+/* global.css */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+  }
+}
