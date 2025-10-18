@@ -86,7 +86,7 @@ const Question = () => {
   return (
     <>
       <div
-        className={`p-2 h-[812px] md:h-[1024px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
+        className={`p-2 h-[812px] md:h-[1204px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
           isDark ? "bg-[#F4F6FA] text-[#313E51]" : "bg-[#313E51] text-white"
         }`}
       >
@@ -171,9 +171,9 @@ const Question = () => {
 
         {/* options container */}
         {/* Parent container: on desktop align to the right */}
-        <div className="w-full flex flex-col lg:items-end lg:pr-16 lg:relative ">
+        <div className="w-full flex flex-col lg:items-end lg:pr-16 lg:relative lg:overflow">
           {/* Options container: limit width so options don't grow full width on desktop */}
-          <div className="w-full max-w-[640px] lg:w-[564px] lg:h-[440px] lg:relative bottom-[220px]">
+          <div className="w-full max-w-[640px] lg:w-[564px] lg:h-[440px] lg:h-fixed  lg:relative bottom-[285px]">
             {question?.options?.map((opt, idx) => {
               const imgSrc = optionImgs[idx];
               const isSelected = idx === selectedOptionIndex;
@@ -279,7 +279,7 @@ const Question = () => {
                 }
               }, 1500);
             }}
-            className="bg-[#A729F5] w-[327px] mx-auto md:w-[640px] lg:mx-auto h-[56px] md:h-[92px] text-white text-[18px] md:text-[28px] font-medium rounded-[12px] md:rounded-[24px] hover:bg-purple-600 transition-colors"
+            className="bg-[#A729F5] w-[327px] mx-auto lg:relative bottom-[150px] left-[42px] md:mx-5 md:w-[640px] lg:ml-auto lg:w-[564px] h-[56px] md:h-[92px] text-white text-[18px] md:text-[28px] font-medium rounded-[12px] md:rounded-[24px] hover:bg-purple-600 transition-colors"
           >
             Submit Answer
           </button>

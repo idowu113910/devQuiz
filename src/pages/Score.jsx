@@ -12,23 +12,22 @@ const Score = () => {
 
   const { state } = useLocation();
 
-  
   const finalScore = state?.score ?? 0;
   const stateName = state?.stateName ?? "";
   const stateImg = state?.stateImg ?? "";
-  
+
   useEffect(() => {
     // If someone reached this page without state (direct URL), you might want to redirect back.
     // Uncomment to force redirect:
     // if (state?.score === undefined) navigate("/", { replace: true });
   }, [state, navigate]);
-  
+
   const [isDark, setIsDark] = useState(() => {
     // read from localStorage on first render only
     const saved = localStorage.getItem("theme");
     return saved ? saved === "dark" : true; // default to dark if nothing saved
   });
-  
+
   const topicKey = (stateName || "Accessibility").toString().toLowerCase();
   useEffect(() => {
     // whenever isDark changes, sync to localStorage and <html data-theme="">
@@ -100,44 +99,50 @@ const Score = () => {
         {dark && <GoMoon src={dark} alt="dark" className="w-6 h-6 " />}
       </div>
 
-      <div className="p-5">
-        <h4 className="font-light text-[40px] md:text-[64px]">
-          Quiz completed
-        </h4>
-        <p className="font-medium text-[40px] md:text-[64px]">You scored...</p>
-      </div>
-
-      <div
-        className={`flex flex-col justify-center items-center shadow-[0_4px_10px_#313E5124] md:shadow-[0_4px_10px_rgba(143,160,193,0.14)] rounded-[12px] md:rounded-[24px] p-[32px] md:p-[48px] w-[327px] md:w-[640px] h-[250px] md:h-[388px] ml-4 md:ml-5 border ${
-          isDark ? "border-white bg-[#ffffff]" : "border-[#3B4D66]"
-        }`}
-      >
-        <div className="flex ">
-          <img
-            src={stateImg || acc}
-            alt=""
-            className="w-[40px] md:w-[56px] h-[40px] md:h-[56px] ml-1 p-2 rounded-[6px] md:rounded-[12px] bg-[#F6E7FF]"
-          />
-          <p className="mt-2 text-[18px] md:text-[28px] font-medium ml-3">
-            {stateName || "Accessibility"}
+      <div className="flex flex-col lg:flex-row items-start md:items-start lg:items-start md:justify-center lg:justify-between gap-6 md:gap-10 p-5 lg:mt-8">
+        {/* Left side: Quiz completed and You scored */}
+        <div className="flex flex-col text-left md:text-left lg:text-left lg:justify-start">
+          <h4 className="font-light text-[40px] md:text-[64px]">
+            Quiz completed
+          </h4>
+          <p className="font-medium text-[40px] md:text-[64px]">
+            You scored...
           </p>
         </div>
 
-        <p
-          className={`font-medium text-[88px] md:text-[144px] ${
-            isDark ? "text-[#313E51]" : "text-[white]"
+        {/* Right side: Score card */}
+        <div
+          className={`flex flex-col justify-center items-center shadow-[0_4px_10px_#313E5124] md:shadow-[0_4px_10px_rgba(143,160,193,0.14)] rounded-[12px] md:rounded-[24px] p-[32px] md:p-[48px] w-[327px] md:w-[640px] lg:w-[564px] h-[250px] md:h-[388px] border ${
+            isDark ? "border-white bg-[#ffffff]" : "border-[#3B4D66]"
           }`}
         >
-          {finalScore}
-        </p>
+          <div className="flex items-center">
+            <img
+              src={stateImg || acc}
+              alt=""
+              className="w-[40px] md:w-[56px] h-[40px] md:h-[56px] p-2 rounded-[6px] md:rounded-[12px] bg-[#F6E7FF]"
+            />
+            <p className="mt-2 text-[18px] md:text-[28px] font-medium ml-3">
+              {stateName || "Accessibility"}
+            </p>
+          </div>
 
-        <p className="text-[18px] md:text-[24px] font-normal text-[#ABC1E1]">
-          out of 10
-        </p>
+          <p
+            className={`font-medium text-[88px] md:text-[144px] ${
+              isDark ? "text-[#313E51]" : "text-[white]"
+            }`}
+          >
+            {finalScore}
+          </p>
 
+          <p className="text-[18px] md:text-[24px] font-normal text-[#ABC1E1]">
+            out of 10
+          </p>
         </div>
-        
-        {/* Optional: Add restart button */}
+      </div>
+
+      {/* Button: Keep below everything, centered */}
+      <div className="flex justify-center md:justify-center lg:justify-end lg:-mx-5">
         <button
           onClick={() => {
             navigate("/");
@@ -147,10 +152,11 @@ const Score = () => {
             setSubmitted(false);
             setShowError(false);
           }}
-          className="rounded-[12px] md:ml-5 md:rounded-[24px] shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] text-[18px] md:mt-4 md:mx-auto md:text-[28px] font-medium h-[56px] md:h-[92px] mt-4 ml-4"
+          className="rounded-[12px] md:rounded-[24px] md:mr-8 shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] lg:w-[564px] text-[18px] md:text-[28px] font-medium h-[56px] md:h-[92px]"
         >
           Play Again
         </button>
+      </div>
     </div>
   );
 };
