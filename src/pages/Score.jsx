@@ -44,7 +44,7 @@ const Score = () => {
 
   return (
     <div
-      className={`p-2 h-[812px] md:h-[1024px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
+      className={`p-2 h-[812px] md:h-[1400px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
         isDark ? "bg-[#F4F6FA] text-[#313E51]" : "bg-[#313E51] text-white"
       }`}
     >
@@ -152,7 +152,7 @@ const Score = () => {
             setSubmitted(false);
             setShowError(false);
           }}
-          className="rounded-[12px] md:rounded-[24px] md:mr-52 shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] lg:w-[564px] text-[18px] md:text-[28px] font-medium h-[56px] md:h-[92px]"
+          className="rounded-[12px] md:rounded-[24px] md:mr-56 shadow-[0_4px_10px_rgba(143,160,193,0.14)] bg-[#A729F5] text-white p-[12px] md:p-[32px] w-[327px] md:w-[640px] lg:w-[564px] text-[18px] md:text-[28px] font-medium h-[56px] md:h-[92px]"
         >
           Play Again
         </button>
