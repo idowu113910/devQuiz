@@ -12,8 +12,6 @@
   transition: background-color 0.5s;
 }
 
-
-
 /* global.css */
 @layer base {
   html,
@@ -24,4 +22,17 @@
   body {
     margin: 0;
   }
+}
+
+@theme {
+  /* Custom breakpoints for Tailwind v4 — replaces theme.screens in tailwind.config.js */
+  --breakpoint-sm: 430px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1025px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Extra named breakpoints for exact pixel targeting */
+  --breakpoint-s1024: 1024px;
+  --breakpoint-s1025: 1025px;
 }
