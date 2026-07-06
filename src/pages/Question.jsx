@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import light from "../assets/light.png";
 import dark from "../assets/dark.png";
 import mode from "../assets/switch white.png";
 import acc from "../assets/Acc 2.png";
 import { CiLight } from "react-icons/ci";
 import { GoMoon } from "react-icons/go";
-import A from "../assets/A.png";
-import B from "../assets/B.png";
-import C from "../assets/C.png";
-import D from "../assets/D.png";
 import data from "../data/data.json";
-import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import errorIcon from "../assets/cancel img.png";
+import { useTheme } from "../theme/ThemeContext";
+import mark from "../assets/mark.svg";
+import wrong from "../assets/wrong.svg";
 
 const Question = () => {
   const navigate = useNavigate();
@@ -23,11 +21,11 @@ const Question = () => {
   const topicKey = (stateName || "Accessibility").toString().toLowerCase();
   const [showError, setShowError] = useState(false);
   const [score, setScore] = useState(0);
-  const [showScore, setShowScore] = useState(false);
+  const { isDark, toggle } = useTheme();
 
   const selectedTopic = useMemo(
     () => data.find((t) => t.title.toString().toLowerCase() === topicKey),
-    [data, topicKey]
+    [topicKey],
   );
 
   const safeTopic = selectedTopic || data[0];
@@ -39,267 +37,283 @@ const Question = () => {
 
   const question = safeTopic.questions?.[qIndex];
 
-  // =  ====
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    setRevealed(false);
     if (selectedOptionIndex === null) return;
-    setSubmitted(true);
 
-    setTimeout(() => {
-      setSubmitted(false);
-      selectedOptionIndex(null);
-    });
-  };
+    const timer = setTimeout(() => setRevealed(true), 1000);
+    return () => clearTimeout(timer);
+  }, [selectedOptionIndex]);
 
-  // Add this useEffect at the top of your component
   useEffect(() => {
     setSelectedOptionIndex(null);
     setSubmitted(false);
     setShowError(false);
-  }, [qIndex]); // Reset whenever question index changes
-  // ========
-
-  const optionImgs = [A, B, C, D];
-
-  const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-
-  // =================
-
-  const [isDark, setIsDark] = useState(() => {
-    // read from localStorage on first render only
-    const saved = localStorage.getItem("theme");
-    return saved ? saved === "dark" : true; // default to dark if nothing saved
-  });
-
-  useEffect(() => {
-    // whenever isDark changes, sync to localStorage and <html data-theme="">
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDark ? "dark" : "light"
-    );
-  }, [isDark]);
-
-  const toggle = () => setIsDark((prev) => !prev);
+    setRevealed(false);
+    setIsLoading(false);
+  }, [qIndex]);
 
   return (
-    <>
-      <div
-        className={`p-2 h-[812px] md:h-[1400px] md:p-4 lg:p-8 lg:relative lg:h-[1700px] transition-colors duration-500 ${
-          isDark ? "bg-[#F4F6FA] text-[#313E51]" : "bg-[#313E51] text-white"
-        }`}
-      >
-        <div className="flex mt-4  ml-4 md:ml-7 lg:w-[564px]">
-          <img
-            src={stateImg || acc}
-            alt=""
-            className="w-[40px] md:w-[56px] h-[40px] md:h-[56px] ml-1  p-2  rounded-[6px] md:rounded-[12px] bg-[#F6E7FF]"
-          />
-          <p className="mt-2 text-[18px]  md:text-[28px] font-medium ml-3">
-            {stateName || "Accessibility"}
-          </p>
-        </div>
-
-        <div className="flex justify-end items-center relative bottom-8 right-2 md:right-5 gap-3">
-          {light && <CiLight src={light} alt="light" className="w-6 h-6" />}
-
-          {/* Toggle */}
-          <button
-            onClick={toggle}
-            aria-pressed={isDark}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="relative w-[60px] h-[30px] rounded-full p-[4px] bg-[#A729F5] transition-colors duration-300 focus:outline-none"
-          >
-            {/* Track background changes with theme */}
-            <div
-              className={`absolute inset-0  rounded-full transition-colors duration-300 ${
-                isDark ? "" : "bg-[#A729F5]"
-              }`}
+    <div
+      className={`min-h-dvh w-full transition-colors duration-500 ${
+        isDark ? "bg-[#313E51] text-white" : "bg-[#F4F6FA] text-[#313E51]"
+      }`}
+    >
+      {/* Outer container: grows with screen width, capped at a max so it never gets absurdly wide */}
+      <div className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-6 sm:py-8 md:px-10 md:py-10 lg:px-16 lg:py-12 xl:px-24 2xl:px-32">
+        {/* Header row: topic + toggle */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src={stateImg || acc}
+              alt=""
+              className="h-10 w-10 rounded-[6px] bg-[#F6E7FF] p-2 sm:h-12 sm:w-12 md:h-14 md:w-14 md:rounded-[12px]"
             />
-
-            {/* Handle */}
-            <div
-              className={`relative z-10 w-[22px] h-[22px] bg-white rounded-full transform transition-transform duration-300 ${
-                isDark ? "translate-x-0" : "translate-x-[28px]"
-              }`}
-            >
-              {mode ? (
-                <img
-                  src={mode}
-                  alt="switch"
-                  className="w-[12px] h-[12px] mx-auto my-auto pointer-events-none"
-                />
-              ) : (
-                <span className="block text-[10px] text-center leading-[22px]">
-                  {isDark ? "🌙" : "☀️"}
-                </span>
-              )}
-            </div>
-          </button>
-
-          {dark && <GoMoon src={dark} alt="dark" className="w-6 h-6 " />}
-        </div>
-
-        <div>
-          <p
-            className={`font-normal text-[14px] md:text-[20px] p-5.5 md:ml-2 pr-1 ${
-              isDark ? " text-[#626C7F]" : "text-[#ABC1E1]"
-            }`}
-          >
-            Question {qIndex + 1} of {safeTopic.questions.length}
-          </p>
-
-          <p
-            className={`font-medium text-[20px] ml-5 md:ml-7 lg:w-[465px] md:text-[36px] ${
-              isDark ? "text-[#313E51]" : "text-[#FFFFFF]"
-            }`}
-          >
-            {question.question}
-          </p>
-        </div>
-
-        <div className="p-5 mt-3">
-          <div
-            className={`w-[327px] lg:w-[465px] md:w-[640px] md:mb-14 rounded-[999px] lg:relative top-40 h-[16px] p-[4px] ${
-              isDark ? "bg-[#FFFFFF]" : "bg-[#3B4D66]"
-            }`}
-          >
-            <div className="w-[152px] lg:w-[300px] md:w-[300px] bg-[#A729F5] rounded-[104px] h-[8px]"></div>
-          </div>
-        </div>
-
-        {/* options container */}
-        {/* Parent container: on desktop align to the right */}
-        <div className="w-full flex flex-col lg:items-end lg:pr-16 lg:relative lg:overflow">
-          {/* Options container: limit width so options don't grow full width on desktop */}
-          <div className="w-full max-w-[640px] lg:w-[564px] lg:h-[440px] lg:h-fixed  lg:relative bottom-[285px]">
-            {question?.options?.map((opt, idx) => {
-              const imgSrc = optionImgs[idx];
-              const isSelected = idx === selectedOptionIndex;
-              const isCorrect = opt === question.answer;
-
-              // Use ring (doesn't change layout) and a transparent default border to keep box size stable
-              const base =
-                "flex items-center gap-3 rounded-[12px] md:ml-5 md:mt-6 md:rounded-[24px] p-1 md:p-4 shadow-[0_4px_20px_#313E5124] cursor-pointer box-border transition-all duration-200";
-              // consistent height so text/image changes don't move other elements
-              const size = "min-h-[72px] md:min-h-[96px]";
-
-              // theme for inner background/text
-              const themeInner = isDark
-                ? "bg-white text-[#313E51]"
-                : "bg-[#3B4D66] text-white";
-
-              // keep a transparent border so toggling border doesn't change layout
-              // but prefer ring for visual emphasis (ring is outside layout)
-              let ringClass = "ring-0 ring-transparent";
-              let imgBg = "bg-[#F4F6FA]";
-
-              if (isSelected) {
-                if (isCorrect) {
-                  ringClass = "ring-4 ring-[#26D782]/90"; // green ring
-                  imgBg = "bg-[#26D782]";
-                } else {
-                  ringClass = "ring-4 ring-[#EE5454]/90"; // red ring
-                  imgBg = "bg-[#EE5454]";
-                }
-              } else if (submitted && isCorrect) {
-                // show correct after submission
-                ringClass = "ring-4 ring-[#26D782]/90";
-                imgBg = "bg-[#26D782]";
-              }
-
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    if (!submitted) setSelectedOptionIndex(idx);
-                    setShowError(false);
-                  }}
-                  // ensure border is always there but transparent by default to preserve layout:
-                  className={`${base} ${size} ${themeInner} border-[3px] border-transparent ${ringClass} w-[327px] lg:w-[564px] md:w-[640px] mx-auto mb-4`}
-                >
-                  {imgSrc ? (
-                    <img
-                      src={imgSrc}
-                      alt={`option-${idx}`}
-                      className={`w-[56px] h-[56px]  md:w-[56px] md:h-[56px] rounded-[8px] p-5 ${imgBg} flex-shrink-0`}
-                    />
-                  ) : (
-                    <div
-                      className={`w-[56px] h-[56px] md:w-[56px] md:h-[56px] mx-auto rounded-[8px] p-2 md:p-2 flex items-center mr-4 justify-center ${imgBg} `}
-                    >
-                      {String.fromCharCode(65 + idx)}
-                    </div>
-                  )}
-                  <p className="text-[18px] md:text-[28px] font-medium ml-2 md:ml-4">
-                    {opt}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Submit button aligned to the right on large screens */}
-          <button
-            onClick={() => {
-              if (selectedOptionIndex === null) {
-                setShowError(true);
-                return;
-              }
-
-              setShowError(false);
-              setSubmitted(true);
-
-              // compute correctness and finalScore synchronously
-              const isCorrect =
-                question.options[selectedOptionIndex] === question.answer;
-
-              const finalScore = isCorrect ? score + 1 : score;
-
-              // update state so in-memory score stays correct
-              setScore(finalScore);
-
-              setTimeout(() => {
-                if (qIndex >= 9) {
-                  // Navigate to score page with the computed finalScore
-                  navigate("/score", {
-                    state: {
-                      score: finalScore,
-                      stateName,
-                      stateImg,
-                    },
-                  });
-                } else {
-                  setQIndex((prev) => prev + 1);
-                  setSelectedOptionIndex(null);
-                  setSubmitted(false);
-                  setShowError(false);
-                }
-              }, 1500);
-            }}
-            className="bg-[#A729F5] w-[327px] mx-auto lg:relative bottom-[150px] left-[42px] md:mx-5 md:w-[640px] lg:ml-auto lg:w-[564px] h-[56px] md:h-[92px] text-white text-[18px] md:text-[28px] font-medium rounded-[12px] md:rounded-[24px] hover:bg-purple-600 transition-colors"
-          >
-            Submit Answer
-          </button>
-        </div>
-
-        {/* Error message */}
-        {showError && (
-          <div className="flex items-center  gap-2 ml-14 mt-4 text-red-500">
-            <img src={errorIcon} alt="Error" className="w-[32px] h-[32px]" />
-            <p
-              className={`text-[18px] md:text-[24px] font-normal ${
-                isDark ? "text-[#EE5454]" : "text-[#FFFFFF]"
-              }`}
-            >
-              Please select an answer
+            <p className="text-[18px] font-medium sm:text-[22px] md:text-[28px]">
+              {stateName || "Accessibility"}
             </p>
           </div>
-        )}
+
+          <div className="flex items-center gap-3">
+            {light && <CiLight className="h-6 w-6" />}
+
+            <button
+              onClick={toggle}
+              aria-pressed={isDark}
+              aria-label={
+                isDark ? "Switch to light mode" : "Switch to dark mode"
+              }
+              className="relative h-[30px] w-[60px] rounded-full bg-[#A729F5] p-[4px] transition-colors duration-300 focus:outline-none"
+            >
+              <div
+                className={`absolute inset-0 rounded-full transition-colors duration-300 ${
+                  isDark ? "" : "bg-[#A729F5]"
+                }`}
+              />
+              <div
+                className={`relative z-10 h-[22px] w-[22px] transform rounded-full bg-white transition-transform duration-300 ${
+                  isDark ? "translate-x-0" : "translate-x-[28px]"
+                }`}
+              >
+                {mode ? (
+                  <img
+                    src={mode}
+                    alt="switch"
+                    className="pointer-events-none mx-auto my-auto h-[12px] w-[12px]"
+                  />
+                ) : (
+                  <span className="block text-center text-[10px] leading-[22px]">
+                    {isDark ? "🌙" : "☀️"}
+                  </span>
+                )}
+              </div>
+            </button>
+
+            {dark && <GoMoon className="h-6 w-6" />}
+          </div>
+        </div>
+
+        {/* Main content: question column on the left, options column on the right at lg+ */}
+        <div className="mt-8 flex flex-col gap-8 sm:mt-10 lg:mt-16 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
+          {/* Left: question + progress bar */}
+          <div className="w-full lg:max-w-[465px] xl:max-w-[560px]">
+            <p
+              className={`text-[14px] font-normal sm:text-[16px] md:text-[20px] ${
+                isDark ? "text-[#626C7F]" : "text-[#ABC1E1]"
+              }`}
+            >
+              Question {qIndex + 1} of {safeTopic.questions.length}
+            </p>
+
+            <p className="mt-3 text-[20px] font-medium sm:text-[26px] md:text-[32px] lg:text-[36px]">
+              {question.question}
+            </p>
+
+            <div
+              className={`mt-6 h-[16px] w-full rounded-[999px] p-[4px] sm:mt-8 md:mt-10 lg:mt-16 ${
+                isDark ? "bg-[#FFFFFF]" : "bg-[#3B4D66]"
+              }`}
+            >
+              <div
+                className="h-[8px] rounded-[104px] bg-[#A729F5] transition-all duration-300"
+                style={{
+                  width: `${((qIndex + 1) / safeTopic.questions.length) * 100}%`,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Right: options + submit */}
+          <div className="w-full lg:max-w-[564px] xl:max-w-[640px]">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              {question?.options?.map((opt, idx) => {
+                const isSelected = idx === selectedOptionIndex;
+                const isCorrect = opt === question.answer;
+
+                const base =
+                  "flex items-center gap-3 rounded-[12px] sm:rounded-[16px] md:rounded-[24px] p-3 sm:p-4 shadow-[0_4px_20px_#313E5124] cursor-pointer box-border transition-all duration-200 w-full";
+                const size = "min-h-[64px] sm:min-h-[80px] md:min-h-[96px]";
+
+                const themeInner = isDark
+                  ? "bg-white text-[#313E51]"
+                  : "bg-[#3B4D66] text-white";
+
+                let borderColorClass = "border-transparent";
+                let optionTextColor = "";
+                const showCheck =
+                  (isSelected && revealed && isCorrect) ||
+                  (submitted && isCorrect);
+                const showCross = isSelected && revealed && !isCorrect;
+
+                if (isSelected) {
+                  if (!revealed) {
+                    // Immediately after selecting: purple, before the reveal
+                    borderColorClass = "border-[#A729F5]";
+                    optionTextColor = "text-[#A729F5]";
+                  } else if (isCorrect) {
+                    borderColorClass = "border-[#26D782]";
+                    optionTextColor = "text-[#26D782]";
+                  } else {
+                    borderColorClass = "border-[#EE5454]";
+                    optionTextColor = "text-[#EE5454]";
+                  }
+                } else if (submitted && isCorrect) {
+                  borderColorClass = "border-[#26D782]";
+                }
+
+                const isCorrectRevealed =
+                  (isSelected && revealed && isCorrect) ||
+                  (submitted && isCorrect);
+                const letterColor = isCorrectRevealed ? "#FFFFFF" : "#313E51";
+
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      if (!submitted) {
+                        setSelectedOptionIndex(idx);
+                        setRevealed(false);
+                      }
+                      setShowError(false);
+                    }}
+                    className={`${base} ${size} ${themeInner} border-[3px] ${borderColorClass} justify-between`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex h-[44px] w-[44px] flex-shrink-0 items-center justify-center rounded-[8px] font-bold text-[18px] sm:h-[56px] sm:w-[56px] sm:text-[24px] ${
+                          isCorrectRevealed ? "bg-[#26D782]" : "bg-[#F4F6FA]"
+                        }`}
+                        style={{ color: letterColor }}
+                      >
+                        {String.fromCharCode(65 + idx)}
+                      </div>
+                      <p
+                        className={`text-[16px] font-medium sm:text-[20px] md:text-[24px] lg:text-[28px] ${optionTextColor}`}
+                      >
+                        {opt}
+                      </p>
+                    </div>
+
+                    {showCheck ? (
+                      <div className="flex h-[28px] w-[28px] flex-shrink-0 items-center justify-center rounded-full sm:h-[36px] sm:w-[36px]">
+                        <img src={mark} alt="" />
+                      </div>
+                    ) : showCross ? (
+                      <div className="flex h-[28px] w-[28px] flex-shrink-0 items-center justify-center rounded-full sm:h-[36px] sm:w-[36px]">
+                        <img src={wrong} alt="" />
+                      </div>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Error message */}
+            {showError && (
+              <div className="mt-4 flex items-center gap-2 text-red-500">
+                <img
+                  src={errorIcon}
+                  alt="Error"
+                  className="h-[24px] w-[24px] sm:h-[32px] sm:w-[32px]"
+                />
+                <p
+                  className={`text-[14px] font-normal sm:text-[18px] md:text-[24px] ${
+                    isDark ? "text-[#EE5454]" : "text-[#EE5454]"
+                  }`}
+                >
+                  Please select an answer
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                if (selectedOptionIndex === null) {
+                  setShowError(true);
+                  return;
+                }
+
+                setShowError(false);
+                setSubmitted(true);
+
+                const isLastQuestion = qIndex >= 9;
+                if (isLastQuestion) setIsLoading(true);
+
+                const isCorrect =
+                  question.options[selectedOptionIndex] === question.answer;
+
+                const finalScore = isCorrect ? score + 1 : score;
+                setScore(finalScore);
+
+                setTimeout(
+                  () => {
+                    if (isLastQuestion) {
+                      navigate("/score", {
+                        state: {
+                          score: finalScore,
+                          stateName,
+                          stateImg,
+                        },
+                      });
+                    } else {
+                      setQIndex((prev) => prev + 1);
+                      setSelectedOptionIndex(null);
+                      setSubmitted(false);
+                      setShowError(false);
+                    }
+                  },
+                  isLastQuestion ? 1500 : 600,
+                );
+              }}
+              disabled={isLoading}
+              className="mt-6 flex h-[56px] w-full items-center justify-center gap-3 rounded-[12px] bg-[#A729F5] text-[18px] font-medium text-white transition-colors hover:bg-purple-600 disabled:cursor-not-allowed disabled:opacity-80 sm:mt-8 sm:h-[64px] sm:text-[22px] md:h-[92px] md:rounded-[24px] md:text-[28px]"
+            >
+              {isLoading ? (
+                <>
+                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent sm:h-6 sm:w-6" />
+                  Loading...
+                </>
+              ) : (
+                "Submit Answer"
+              )}
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+
+      {/* Full-screen loading overlay before navigating to the next question/page */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+          <div className="h-16 w-16 animate-spin rounded-full border-4 border-[#A729F5] border-t-transparent sm:h-20 sm:w-20" />
+        </div>
+      )}
+    </div>
   );
 };
 
