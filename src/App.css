@@ -24,6 +24,7 @@
   }
 }
 
+
 @theme {
   /* Custom breakpoints for Tailwind v4 — replaces theme.screens in tailwind.config.js */
   --breakpoint-sm: 430px;

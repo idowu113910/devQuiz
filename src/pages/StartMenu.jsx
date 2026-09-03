@@ -100,7 +100,7 @@ const StartMenu = () => {
                   navigate("/question", { state: { name: "HTML", img: html } })
                 }
                 className={`flex items-center h-[96px] rounded-[12px] bg-[#3B4D66] 2xl:w-full pr-9 md:rounded-[24px] p-[12px] shadow-[0_4px_20px_#313E5124] ${
-                  isDark ? "bg-[white] text-[#313E51]" : ""
+                  isDark ? "bg-[white] text-[#313E51]" : "text-white"
                 }`}
               >
                 <img
@@ -120,7 +120,7 @@ const StartMenu = () => {
                   navigate("/question", { state: { name: "CSS", img: css } })
                 }
                 className={`flex items-center h-[96px] mt-6 rounded-[12px] bg-[#3B4D66] 2xl:w-full pr-9 md:rounded-[24px] p-[12px] shadow-[0_4px_20px_#313E5124] ${
-                  isDark ? "bg-[white] text-[#313E51]" : ""
+                  isDark ? "bg-[white] text-[#313E51]" : "text-white"
                 }`}
               >
                 <img
@@ -142,7 +142,7 @@ const StartMenu = () => {
                   })
                 }
                 className={`flex items-center h-[96px] mt-6 rounded-[12px] bg-[#3B4D66] 2xl:w-full pr-9 md:rounded-[24px] p-[12px] shadow-[0_4px_20px_#313E5124] ${
-                  isDark ? "bg-[white] text-[#313E51]" : ""
+                  isDark ? "bg-[white] text-[#313E51]" : "text-white"
                 }`}
               >
                 <img
@@ -164,13 +164,14 @@ const StartMenu = () => {
                   })
                 }
                 className={`flex items-center h-[96px] mt-6 rounded-[12px] bg-[#3B4D66] 2xl:w-full pr-9 md:rounded-[24px] p-[12px] shadow-[0_4px_20px_#313E5124] ${
-                  isDark ? "bg-[white] text-[#313E51]" : ""
+                  isDark ? "bg-[white] text-[#313E51]" : "text-white"
                 }`}
               >
                 <img
                   src={acc}
                   alt=""
-                  className="w-[40px] md:w-[56px] h-[40px] md:h-[56px] s1024:w-[36px] s1025:w-[36px] s1024:h-[36px] s1025:h-[36px] p-2 rounded-[6px] md:rounded-[12px] bg-[#F6E7FF]"
+                  className="w-[40px] md:w-[56px] h-[40px] md:h-[56px] s1024:w-[36px] s1025:w-[36px] s1024:h-[36px] s1025:h-[36px]
+                   p-2 rounded-[6px] md:rounded-[12px] bg-[#F6E7FF]"
                 />
                 <p className="mt-2 text-[18px] md:text-[28px] s1024:text-[16px] s1025:text-[16px] font-medium ml-3">
                   Accessibility
